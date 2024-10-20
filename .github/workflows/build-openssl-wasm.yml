@@ -1,4 +1,4 @@
-name: Build openssl.wasm 
+name: Build openssl.wasm  
 
 on:
   push:
