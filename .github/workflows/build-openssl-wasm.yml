@@ -2,6 +2,7 @@ name: Build openssl.wasm
 
 on:
   push:
+    branches: [ main ]
     tags:
       - "v*.*.*"
 
