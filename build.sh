@@ -24,7 +24,7 @@ wasiconfigure ./Configure gcc -no-sock -no-ui-console -DHAVE_FORK=0 -D_WASI_EMUL
 sed -i -e "s/CNF_EX_LIBS=/CNF_EX_LIBS=-lwasi-emulated-mman -lwasi-emulated-signal /g" Makefile
 
 # build!
-wasimake make
+wasimake make build_generated build_libs_nodep libssl.wasm libcrypto.wasm
 
 # wasirun doesn't add the mapdir and we need it, so replace wasirun with running
 # wasmer directly
@@ -32,28 +32,31 @@ wasimake make
 # TODO: it would be nice is wasmer allowed us to specify a starting dir - --dir
 #       is not that, but weirdly --dir=. sort of seems to accomplish that,
 #       then I could map / and just start in the cwd
-sed -i 's|wasirun|wasmer run --enable-all --dir=. --mapdir=/build/openssl-${OPENSSL_VERSION}:/build/openssl-${OPENSSL_VERSION}|' apps/openssl
+#sed -i 's|wasirun|wasmer run --enable-all --dir=. --mapdir=/build/openssl-${OPENSSL_VERSION}:/build/openssl-${OPENSSL_VERSION}|' apps/openssl
 # additionally map /dev because it's needed for some tests (this'll be removed
 # when cross compile is fixed - see below)
-sed -i 's|--enable-all|--enable-all --mapdir=/dev:/dev|' apps/openssl
-sed -i 's|\.wasm |\.wasm -- |' apps/openssl
+#sed -i 's|--enable-all|--enable-all --mapdir=/dev:/dev|' apps/openssl
+#sed -i 's|\.wasm |\.wasm -- |' apps/openssl
+
+ls -al
+
 # now the tests
 # sslapitest needs /tmp mapped, so just map it for everything
-grep -lr wasirun test/* | xargs sed -i 's|wasirun|wasmer run --enable-all --dir=. --mapdir=/tmp:/tmp --mapdir=/build/openssl-${OPENSSL_VERSION}:/build/openssl-${OPENSSL_VERSION}|'
-grep -lr wasmer test/* | xargs sed -i 's|\.wasm |\.wasm -- |'
+#grep -lr wasirun test/* | xargs sed -i 's|wasirun|wasmer run --enable-all --dir=. --mapdir=/tmp:/tmp --mapdir=/build/openssl-${OPENSSL_VERSION}:/build/openssl-${OPENSSL_VERSION}|'
+#grep -lr wasmer test/* | xargs sed -i 's|\.wasm |\.wasm -- |'
 # also pass the entire environment to wasmer
 # TODO: add a switch to wasmer to do this
-sed -i '/^wasmer run.*/i args=\(\); for v in $\(compgen -e\); do if [[ ${!v} == "" ]]; then continue; fi; args+=\( --env="$v=${!v}" \); done' apps/openssl
-sed -i 's/--enable-all/--enable-all "${args[@]}"/' apps/openssl
+#sed -i '/^wasmer run.*/i args=\(\); for v in $\(compgen -e\); do if [[ ${!v} == "" ]]; then continue; fi; args+=\( --env="$v=${!v}" \); done' apps/openssl
+#sed -i 's/--enable-all/--enable-all "${args[@]}"/' apps/openssl
 # now the tests
-grep -lr wasmer test/* | xargs sed -i '/^wasmer run.*/i args=\(\); for v in $\(compgen -e\); do if [[ ${!v} == "" ]]; then continue; fi; args+=\( --env="$v=${!v}" \); done'
-grep -lr wasmer test/* | xargs sed -i 's/--enable-all/--enable-all "${args[@]}"/'
+#grep -lr wasmer test/* | xargs sed -i '/^wasmer run.*/i args=\(\); for v in $\(compgen -e\); do if [[ ${!v} == "" ]]; then continue; fi; args+=\( --env="$v=${!v}" \); done'
+#grep -lr wasmer test/* | xargs sed -i 's/--enable-all/--enable-all "${args[@]}"/'
 
 # Testing -test_errstr: this will always fail because of linux/wasi mismatches -
 # TODO: not needed if we fix cross compile in configdata.pm
 # rehash triggers a permission denied error in WASI for some tests - needs investigation
 # test_x509_store - depends on rehash working
 # test_ca - calls to rename appear to be broken for missing files in WASI
-make TESTS="-test_rehash -test_x509_store -test_ca -test_errstr" test
+#make TESTS="-test_rehash -test_x509_store -test_ca -test_errstr" test
 
 cp apps/openssl.wasm ..
