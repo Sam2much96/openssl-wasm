@@ -4,7 +4,7 @@
 #curl https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz -o openssl-${OPENSSL_VERSION}.tar.gz
 wget https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz
 tar xf openssl-${OPENSSL_VERSION}.tar.gz
-
+ls -al
 patch -p0 < openssl-${OPENSSL_VERSION}.patch
 
 cd openssl-${OPENSSL_VERSION}
