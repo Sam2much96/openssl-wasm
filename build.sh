@@ -1,7 +1,8 @@
 #!/bin/sh
 
 # get the source
-curl https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz -o openssl-${OPENSSL_VERSION}.tar.gz
+#curl https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz -o openssl-${OPENSSL_VERSION}.tar.gz
+wget https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz
 tar xf openssl-${OPENSSL_VERSION}.tar.gz
 
 patch -p0 < openssl-${OPENSSL_VERSION}.patch
