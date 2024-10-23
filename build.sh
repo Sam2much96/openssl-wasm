@@ -61,6 +61,8 @@ wasicc -nostartfiles -o libcrypto.wasm libcrypto.o
 
 ls -al
 
+cd apps && ls -al
+
 # now the tests
 # sslapitest needs /tmp mapped, so just map it for everything
 #grep -lr wasirun test/* | xargs sed -i 's|wasirun|wasmer run --enable-all --dir=. --mapdir=/tmp:/tmp --mapdir=/build/openssl-${OPENSSL_VERSION}:/build/openssl-${OPENSSL_VERSION}|'
@@ -81,5 +83,5 @@ ls -al
 #make TESTS="-test_rehash -test_x509_store -test_ca -test_errstr" test
 
 #cp apps/openssl.wasm ..
-cp libssl.wasm ..
-cp libcrypto.wasm ..
+cp apps/libssl.wasm ..
+cp apps/libcrypto.wasm ..
