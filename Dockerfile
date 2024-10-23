@@ -1,7 +1,7 @@
 FROM artlogical/wasienv:latest
 
 # install some deps specifically for building openssl
-RUN apt-get update && apt-get install -y --no-install-recommends build-essential libfindbin-libs-perl wget
+RUN apt-get update && apt-get install -y --no-install-recommends build-essential libfindbin-libs-perl wget binutils
 
 ENV OPENSSL_VERSION="1.1.1l"
 
