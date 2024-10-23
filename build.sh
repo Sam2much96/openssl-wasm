@@ -25,27 +25,7 @@ wasiconfigure ./Configure gcc -no-sock -no-ui-console -DHAVE_FORK=0 -DOPENSSL_NO
 sed -i -e "s/CNF_EX_LIBS=/CNF_EX_LIBS=-lwasi-emulated-mman -lwasi-emulated-signal /g" Makefile
 
 # build libs!
-wasimake make build_generated build_libs_nodep libssl.a libcrypto.a
-
-ls -al
-
-# build again and check
 wasimake make
-
-ls -al
-
-#generates the index for static libraries
-ranlib libssl.a
-ranlib libcrypto.a
-
-
-# archive main files as libraries
-ar rcs libssl.o libssl.a
-ar rcs libcrypto.o libssl.a
-
-# build libs
-wasicc -nostartfiles -o libssl.wasm libssl.o
-wasicc -nostartfiles -o libcrypto.wasm libcrypto.o
 
 # wasirun doesn't add the mapdir and we need it, so replace wasirun with running
 # wasmer directly
@@ -59,9 +39,8 @@ wasicc -nostartfiles -o libcrypto.wasm libcrypto.o
 #sed -i 's|--enable-all|--enable-all --mapdir=/dev:/dev|' apps/openssl
 #sed -i 's|\.wasm |\.wasm -- |' apps/openssl
 
-ls -al
 
-cd apps && ls -al
+#cd apps && ls -al
 
 # now the tests
 # sslapitest needs /tmp mapped, so just map it for everything
@@ -82,6 +61,4 @@ cd apps && ls -al
 # test_ca - calls to rename appear to be broken for missing files in WASI
 #make TESTS="-test_rehash -test_x509_store -test_ca -test_errstr" test
 
-#cp apps/openssl.wasm ..
-cp apps/libssl.wasm ..
-cp apps/libcrypto.wasm ..
+cp apps/openssl.wasm ..
