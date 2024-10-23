@@ -24,10 +24,21 @@ wasiconfigure ./Configure gcc -no-sock -no-ui-console -DHAVE_FORK=0 -DOPENSSL_NO
 # enables stuff from mman.h (see define above) also add -lwasi-emulated-signal
 sed -i -e "s/CNF_EX_LIBS=/CNF_EX_LIBS=-lwasi-emulated-mman -lwasi-emulated-signal /g" Makefile
 
-# build!
+# build libs!
 wasimake make build_generated build_libs_nodep libssl.a libcrypto.a
 
 ls -al
+
+# build again and check
+wasimake make
+
+ls -al
+
+#generates the index for static libraries
+ranlib libssl.a
+ranlib libcrypto.a
+
+
 # archive main files as libraries
 ar rcs libssl.o libssl.a
 ar rcs libcrypto.o libssl.a
