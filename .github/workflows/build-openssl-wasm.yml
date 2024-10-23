@@ -4,7 +4,7 @@ on:
   push:
     branches : [ main ]
     tags:
-      - "v1.1.1l"
+      - "v*.*.*"
 
 jobs:
 
@@ -21,6 +21,8 @@ jobs:
     - name: Copy openssl.wasm from container
       run: docker cp openssl-wasm-container:/build/openssl.wasm .
     - name: Release
-      uses: softprops/action-gh-release@v1
+      uses: actions/upload-artifact@v4
       with:
-        files: openssl.wasm
+        name: "openssl 1-1-1l.wasm"
+        path: openssl.wasm
+    
