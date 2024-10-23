@@ -18,13 +18,14 @@ cd openssl-${OPENSSL_VERSION}
 # new -DOPENSSL_NO_SECURE_MEMORY - wasi doesn't have secure mem (madvise, mlock, etc...)
 # new -DNO_SYSLOG - get rid of need for patch above
 # --with-rand-seed=getrandom (needed to force using getentropy because WASI has no /dev/random or getrandom)
-wasiconfigure ./Configure gcc -no-sock -no-ui-console -DHAVE_FORK=0 -D_WASI_EMULATED_MMAN -D_WASI_EMULATED_SIGNAL -DOPENSSL_NO_SECURE_MEMORY -DNO_SYSLOG --with-rand-seed=getrandom
+#wasiconfigure ./Configure gcc -no-sock -no-ui-console -DHAVE_FORK=0 -D_WASI_EMULATED_MMAN -D_WASI_EMULATED_SIGNAL -DOPENSSL_NO_SECURE_MEMORY -DNO_SYSLOG --with-rand-seed=getrandom
+wasiconfigure ./Configure gcc -no-sock -no-ui-console -DHAVE_FORK=0 -DOPENSSL_NO_SECURE_MEMORY -DNO_SYSLOG --with-rand-seed=getrandom
 
 # enables stuff from mman.h (see define above) also add -lwasi-emulated-signal
-sed -i -e "s/CNF_EX_LIBS=/CNF_EX_LIBS=-lwasi-emulated-mman -lwasi-emulated-signal /g" Makefile
+#sed -i -e "s/CNF_EX_LIBS=/CNF_EX_LIBS=-lwasi-emulated-mman -lwasi-emulated-signal /g" Makefile
 
 # build!
-wasimake make build_generated build_libs_nodep libssl.wasm libcrypto.wasm
+wasimake make build_generated build_libs_nodep libssl.a libcrypto.a
 
 # wasirun doesn't add the mapdir and we need it, so replace wasirun with running
 # wasmer directly
@@ -59,4 +60,4 @@ ls -al
 # test_ca - calls to rename appear to be broken for missing files in WASI
 #make TESTS="-test_rehash -test_x509_store -test_ca -test_errstr" test
 
-cp apps/openssl.wasm ..
+#cp apps/openssl.wasm ..
