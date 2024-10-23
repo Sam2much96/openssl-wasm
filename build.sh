@@ -29,8 +29,8 @@ wasimake make build_generated build_libs_nodep libssl.a libcrypto.a
 
 ls -al
 # archive main files as libraries
-ar rcs libssl.a libssl.o
-ar rcs libcrypto.a libssl.o
+ar rcs libssl.o libssl.a
+ar rcs libcrypto.o libssl.a
 
 # build libs
 wasicc -nostartfiles -o libssl.wasm libssl.o
