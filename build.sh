@@ -27,6 +27,8 @@ sed -i -e "s/CNF_EX_LIBS=/CNF_EX_LIBS=-lwasi-emulated-mman -lwasi-emulated-signa
 # build!
 wasimake make build_generated build_libs_nodep libssl.a libcrypto.a
 
+wasicc -o libssl.wasm libssl.a
+wasicc -o libcrypto.wasm libcrypto.a
 # wasirun doesn't add the mapdir and we need it, so replace wasirun with running
 # wasmer directly
 # TODO: fix wasirun to add mapdir automatically (or with a switch)
