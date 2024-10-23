@@ -25,8 +25,17 @@ wasiconfigure ./Configure gcc -no-sock -no-ui-console -DHAVE_FORK=0 -DOPENSSL_NO
 sed -i -e "s/CNF_EX_LIBS=/CNF_EX_LIBS=-lwasi-emulated-mman -lwasi-emulated-signal /g" Makefile
 
 # build!
-#wasimake make build_generated build_libs_nodep libssl.a libcrypto.a
-wasimake make
+wasimake make build_generated build_libs_nodep libssl.a libcrypto.a
+
+ls -al
+# archive main files as libraries
+ar rcs libssl.a libssl.o
+ar rcs libcrypto.a libssl.o
+
+# build libs
+wasicc -nostartfiles -o libssl.wasm libssl.o
+wasicc -nostartfiles -o libcrypto.wasm libcrypto.o
+
 # wasirun doesn't add the mapdir and we need it, so replace wasirun with running
 # wasmer directly
 # TODO: fix wasirun to add mapdir automatically (or with a switch)
@@ -61,4 +70,5 @@ ls -al
 #make TESTS="-test_rehash -test_x509_store -test_ca -test_errstr" test
 
 #cp apps/openssl.wasm ..
-cp openssl.wasm ..
+cp libssl.wasm ..
+cp libcrypto.wasm ..
