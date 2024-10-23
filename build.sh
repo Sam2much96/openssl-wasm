@@ -19,7 +19,7 @@ cd openssl-${OPENSSL_VERSION}
 # new -DNO_SYSLOG - get rid of need for patch above
 # --with-rand-seed=getrandom (needed to force using getentropy because WASI has no /dev/random or getrandom)
 #wasiconfigure ./Configure gcc -no-sock -no-ui-console -DHAVE_FORK=0 -D_WASI_EMULATED_MMAN -D_WASI_EMULATED_SIGNAL -DOPENSSL_NO_SECURE_MEMORY -DNO_SYSLOG --with-rand-seed=getrandom
-wasiconfigure ./Configure gcc -no-sock -no-ui-console -DHAVE_FORK=0 -DOPENSSL_NO_SECURE_MEMORY -D_WASI_EMULATED_SIGNAL -DNO_SYSLOG --with-rand-seed=getrandom
+wasiconfigure ./Configure gcc -no-sock -no-ui-console -DHAVE_FORK=0 -DOPENSSL_NO_SECURE_MEMORY -D_WASI_EMULATED_MMAN -D_WASI_EMULATED_SIGNAL -DNO_SYSLOG --with-rand-seed=getrandom
 
 # enables stuff from mman.h (see define above) also add -lwasi-emulated-signal
 sed -i -e "s/CNF_EX_LIBS=/CNF_EX_LIBS=-lwasi-emulated-mman -lwasi-emulated-signal /g" Makefile
